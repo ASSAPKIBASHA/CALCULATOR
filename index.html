@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vanilla JS Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="app-title">Calculator</h1>
+
+      <!-- Calculator container -->
+      <section class="calculator" aria-label="Calculator">
+        <!-- Small line shows previous value and operator -->
+        <div class="display">
+          <div id="expression" class="expression" aria-live="polite"></div>
+          <div id="screen" class="screen" aria-live="polite" aria-label="Result and input">0</div>
+        </div>
+
+        <!-- Keys laid out as a CSS grid -->
+        <div class="keys" id="keys" role="group" aria-label="Calculator keys">
+          <!-- Row 1 -->
+          <button class="key key-func" data-action="clear" aria-label="Clear">C</button>
+          <button class="key key-func" data-action="delete" aria-label="Delete last">DEL</button>
+          <button class="key key-op" data-operator="/" aria-label="Divide">÷</button>
+          <button class="key key-op" data-operator="*" aria-label="Multiply">×</button>
+          <!-- Row 2 -->
+          <button class="key" data-digit="7">7</button>
+          <button class="key" data-digit="8">8</button>
+          <button class="key" data-digit="9">9</button>
+          <button class="key key-op" data-operator="-" aria-label="Subtract">−</button>
+          <!-- Row 3 -->
+          <button class="key" data-digit="4">4</button>
+          <button class="key" data-digit="5">5</button>
+          <button class="key" data-digit="6">6</button>
+          <button class="key key-op" data-operator="+" aria-label="Add">+</button>
+          <!-- Row 4 -->
+          <button class="key" data-digit="1">1</button>
+          <button class="key" data-digit="2">2</button>
+          <button class="key" data-digit="3">3</button>
+          <button class="key key-equals" data-action="equals" aria-label="Equals">=</button>
+          <!-- Row 5 -->
+          <button class="key key-zero" data-digit="0">0</button>
+          <button class="key" data-decimal=".">.</button>
+        </div>
+      </section>
+
+      <!-- Simple history list -->
+      <section class="history" aria-label="Calculation history">
+        <div class="history-header">
+          <h2>History</h2>
+          <button id="clear-history" class="btn-clear-history" type="button">Clear History</button>
+        </div>
+        <ul id="history-list" class="history-list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

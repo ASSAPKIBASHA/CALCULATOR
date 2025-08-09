@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculator Tests</title>
+    <style>
+      body { font-family: ui-sans-serif, system-ui; background: #0b1020; color: #e5e7eb; }
+      .pass { color: #22c55e; }
+      .fail { color: #ef4444; }
+      .case { margin: .2rem 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Calculator Tests</h1>
+    <div id="results"></div>
+
+    <!-- Load the app script (runs without DOM errors due to guards) -->
+    <script src="../script.js"></script>
+    <script>
+      // Lightweight test harness
+      const tests = [];
+      function test(name, fn) { tests.push({ name, fn }); }
+      function expect(actual) {
+        return {
+          toBe(expected) {
+            if (actual !== expected) throw new Error(`${actual} !== ${expected}`);
+          }
+        }
+      }
+
+      // Pure helpers we can call indirectly by simulating operations via keyboard events
+      function key(k) { window.dispatchEvent(new KeyboardEvent('keydown', { key: k })); }
+      function clickEquals() { key('Enter'); }
+      function clickClear() { key('c'); }
+
+      // Cases
+      test('2 + 3 = 5', () => {
+        clickClear();
+        key('2'); key('+'); key('3'); clickEquals();
+        const screen = document.getElementById('screen');
+        expect(screen.textContent).toBe('5');
+      });
+
+      test('7 - 9 = -2', () => {
+        clickClear();
+        key('7'); key('-'); key('9'); clickEquals();
+        const screen = document.getElementById('screen');
+        expect(screen.textContent).toBe('-2');
+      });
+
+      test('6 * 7 = 42', () => {
+        clickClear();
+        key('6'); key('*'); key('7'); clickEquals();
+        const screen = document.getElementById('screen');
+        expect(screen.textContent).toBe('42');
+      });
+
+      test('8 / 0 -> Error', () => {
+        clickClear();
+        key('8'); key('/'); key('0'); clickEquals();
+        const screen = document.getElementById('screen');
+        expect(screen.textContent).toBe('Error');
+      });
+
+      test('Decimal handling 0.1 + 0.2 ~ 0.3', () => {
+        clickClear();
+        key('0'); key('.'); key('1'); key('+'); key('0'); key('.'); key('2'); clickEquals();
+        const screen = document.getElementById('screen');
+        expect(screen.textContent).toBe('0.3');
+      });
+
+      // Run
+      function run() {
+        const resEl = document.getElementById('results');
+        const frag = document.createDocumentFragment();
+        let passed = 0;
+        tests.forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'case';
+          try {
+            // Attach minimal DOM for app to work
+            if (!document.getElementById('screen')) {
+              const app = document.createElement('div');
+              app.innerHTML = '<div id="expression"></div><div id="screen">0</div><div id="keys"></div><ul id="history-list"></ul><button id="clear-history"></button>';
+              document.body.appendChild(app);
+            }
+            t.fn();
+            div.textContent = `✓ ${t.name}`;
+            div.classList.add('pass');
+            passed++;
+          } catch (err) {
+            div.textContent = `✗ ${t.name} — ${err.message}`;
+            div.classList.add('fail');
+          }
+          frag.appendChild(div);
+        });
+        const summary = document.createElement('p');
+        summary.textContent = `${passed} / ${tests.length} passed`;
+        frag.appendChild(summary);
+        resEl.innerHTML = '';
+        resEl.appendChild(frag);
+      }
+
+      window.onload = run;
+    </script>
+  </body>
+</html>
+
